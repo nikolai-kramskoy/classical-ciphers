@@ -6,6 +6,9 @@
 # Test dir
 tests/
 
+# txt files
+*.txt
+
 # Node artifact files
 node_modules/
 dist/
