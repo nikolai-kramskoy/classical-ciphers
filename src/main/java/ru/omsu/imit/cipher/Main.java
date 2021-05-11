@@ -69,19 +69,21 @@ public class Main {
         System.out.println("output_file input_file keys");
         System.out.println();
         System.out.println("cipher_name:");
-        System.out.println("    caesar;");
-        System.out.println("    affine;");
+        System.out.println("    caesar - E(x) = (x + n) mod m (alphabet size),");
+        System.out.println("             D(x) = (x - n) mod m (alphabet size)");
+        System.out.println("    affine - E(x) = (a*x + b) mod m (alphabet size),");
+        System.out.println("             D(x) = a^(-1) * (x - b) mod m (alphabet size)");
         System.out.println();
         System.out.println("encryption_option:");
-        System.out.println("    encrypt;");
-        System.out.println("    decrypt;");
+        System.out.println("    encrypt");
+        System.out.println("    decrypt");
         System.out.println();
         System.out.println("keys:");
         System.out.println("    caesar cipher keys:");
-        System.out.println("        n - shift;");
+        System.out.println("        n - int shift");
         System.out.println();
         System.out.println("    affine cipher keys:");
-        System.out.println("        a - any coprime to the size of the alphabet integer;");
-        System.out.println("        b - any integer number;");
+        System.out.println("        a - any coprime to the size of the alphabet integer");
+        System.out.println("        b - any integer number");
     }
 }

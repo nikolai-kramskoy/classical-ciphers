@@ -1,8 +1,8 @@
 package ru.omsu.imit.cipher;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Deque;
+import java.util.LinkedList;
 
 public class CaesarCipher {
     private final char[] alphabet;
@@ -17,11 +17,10 @@ public class CaesarCipher {
     }
     
     public CaesarCipher(char a, char b) {
-        alphabet = new char[b-a];
+        alphabet = new char[b-a+1];
         
-        char c = a;
-        for (int i = 0; i < alphabet.length; ++i, ++c) {
-            alphabet[i] = c;
+        for (int i = 0; i < alphabet.length; ++i, ++a) {
+            alphabet[i] = a;
         }
     }
     
@@ -35,25 +34,35 @@ public class CaesarCipher {
         System.arraycopy(alphabet, 0, this.alphabet, 0, alphabet.length);
     }
     
-    public CaesarCipher(Reader in) throws IOException {
-        if (in == null) {
-            throw new IllegalArgumentException("in == null");
+    public CaesarCipher(Reader alphabet) throws IOException {
+        if (alphabet == null) {
+            throw new IllegalArgumentException("alphabet == null");
         }
         
-        List<Character> listAlphabet = new ArrayList<>();
+        Deque<Character> dequeAlphabet = new LinkedList<>();
         
-        BufferedReader bufIn = new BufferedReader(in);
+        BufferedReader bufIn = new BufferedReader(alphabet);
         
         int intChar;
         while ((intChar = bufIn.read()) != -1) {
-            listAlphabet.add((char) intChar);
+            dequeAlphabet.addLast((char) intChar);
         }
         
-        alphabet = new char[listAlphabet.size()];
+        this.alphabet = new char[dequeAlphabet.size()];
         
-        for (int i = 0; i < alphabet.length; ++i) {
-            alphabet[i] = listAlphabet.get(i);
+        for (int i = 0; i < this.alphabet.length; ++i) {
+            this.alphabet[i] = dequeAlphabet.removeFirst();
         }
+    }
+    
+    public CaesarCipher(CaesarCipher caesarCipher) {
+        if (caesarCipher == null) {
+            throw new IllegalArgumentException("caesarCipher == null");
+        }
+        
+        alphabet = new char[caesarCipher.alphabet.length];
+        
+        System.arraycopy(caesarCipher.alphabet, 0, alphabet, 0, alphabet.length);
     }
     
     public void encrypt(Writer cipher, Reader plain, int n)
@@ -72,16 +81,12 @@ public class CaesarCipher {
             
             while ((intChar = bufIn.read()) != -1) {
                 c = (char) intChar;
-                
-                int i;
-                for (i = 0; i < alphabet.length; ++i) {
-                    if (i == alphabet.length - 1 && alphabet[i] != c) {
+    
+                int i = 0;
+                for (; i < alphabet.length && alphabet[i] != c; ++i) {
+                    if (i == alphabet.length - 1) {
                         throw new IllegalArgumentException("symbol '"
                                 + c + "' is not present in the alphabet");
-                    }
-                    
-                    if (alphabet[i] == c) {
-                        break;
                     }
                 }
                 
@@ -111,16 +116,12 @@ public class CaesarCipher {
             
             while ((intChar = bufIn.read()) != -1) {
                 c = (char) intChar;
-                
-                int i;
-                for (i = 0; i < alphabet.length; ++i) {
-                    if (i == alphabet.length - 1 && alphabet[i] != c) {
+    
+                int i = 0;
+                for (; i < alphabet.length && alphabet[i] != c; ++i) {
+                    if (i == alphabet.length - 1) {
                         throw new IllegalArgumentException("symbol '"
                                 + c + "' is not present in the alphabet");
-                    }
-                    
-                    if (alphabet[i] == c) {
-                        break;
                     }
                 }
                 
