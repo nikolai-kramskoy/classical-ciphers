@@ -1,81 +1,28 @@
 package ru.omsu.imit.cipher;
 
 import java.io.*;
-import java.util.Deque;
-import java.util.LinkedList;
 
 public class AffineCipher {
-    private final char[] alphabet;
-    
-    public AffineCipher() {
-        alphabet = new char[26];
-        
-        char c = 'a';
-        for (int i = 0; i < alphabet.length; ++i, ++c) {
-            alphabet[i] = c;
-        }
+    private AffineCipher() {
     }
     
-    public AffineCipher(char a, char b) {
-        alphabet = new char[b-a+1];
-        
-        for (int i = 0; i < alphabet.length; ++i, ++a) {
-            alphabet[i] = a;
-        }
-    }
-    
-    public AffineCipher(char[] alphabet) {
-        if (alphabet == null) {
-            throw new IllegalArgumentException("alphabet == null");
-        }
-        
-        this.alphabet = new char[alphabet.length];
-        
-        System.arraycopy(alphabet, 0, this.alphabet, 0, alphabet.length);
-    }
-    
-    public AffineCipher(Reader alphabet) throws IOException {
-        if (alphabet == null) {
-            throw new IllegalArgumentException("alphabet == null");
-        }
-    
-        Deque<Character> dequeAlphabet = new LinkedList<>();
-        
-        BufferedReader bufIn = new BufferedReader(alphabet);
-        
-        int intChar;
-        while ((intChar = bufIn.read()) != -1) {
-            dequeAlphabet.addLast((char) intChar);
-        }
-        
-        this.alphabet = new char[dequeAlphabet.size()];
-    
-        for (int i = 0; i < this.alphabet.length; ++i) {
-            this.alphabet[i] = dequeAlphabet.removeFirst();
-        }
-    }
-    
-    public AffineCipher(AffineCipher affineCipher) {
-        if (affineCipher == null) {
-            throw new IllegalArgumentException("affineCipher == null");
-        }
-        
-        alphabet = new char[affineCipher.alphabet.length];
-        
-        System.arraycopy(affineCipher.alphabet, 0, alphabet, 0, alphabet.length);
-    }
-    
-    public void encrypt(Writer cipher, Reader plain, int a, int b)
+    public static void encrypt(Alphabet alphabet, Writer cipher, Reader plain,
+                               int a, int b)
             throws IOException {
+        if (alphabet == null) {
+            throw new IllegalArgumentException("alphabet == null");
+        }
         if (cipher == null) {
             throw new IllegalArgumentException("cipher == null");
         }
         if (plain == null) {
             throw new IllegalArgumentException("plain == null");
         }
-        if (gcd(a, alphabet.length) != 1) {
+        if (gcd(a, alphabet.size()) != 1) {
             throw new IllegalArgumentException("a and m are not coprime");
         }
+    
+        final char[] ALPHABET = alphabet.getAlphabet();
     
         try (BufferedWriter bufOut = new BufferedWriter(cipher);
                 BufferedReader bufIn = new BufferedReader(plain)) {
@@ -86,36 +33,42 @@ public class AffineCipher {
                 c = (char) intChar;
         
                 int i = 0;
-                for (; i < alphabet.length && alphabet[i] != c; ++i) {
-                    if (i == alphabet.length - 1) {
+                for (; i < ALPHABET.length && ALPHABET[i] != c; ++i) {
+                    if (i == ALPHABET.length - 1) {
                         throw new IllegalArgumentException("symbol '"
                                 + c + "' is not present in the alphabet");
                     }
                 }
     
-                int newIdx = (a*i + b) % alphabet.length;
+                int newIdx = (a*i + b) % ALPHABET.length;
     
                 if (newIdx < 0)
-                    newIdx += alphabet.length;
+                    newIdx += ALPHABET.length;
     
-                bufOut.write(alphabet[newIdx]);
+                bufOut.write(ALPHABET[newIdx]);
             }
         }
     }
     
-    public void decrypt(Writer plain, Reader cipher, int a, int b)
+    public static void decrypt(Alphabet alphabet, Writer plain, Reader cipher,
+                               int a, int b)
             throws IOException {
+        if (alphabet == null) {
+            throw new IllegalArgumentException("alphabet == null");
+        }
         if (plain == null) {
             throw new IllegalArgumentException("plain == null");
         }
         if (cipher == null) {
             throw new IllegalArgumentException("cipher == null");
         }
-        if (gcd(a, alphabet.length) != 1) {
+        if (gcd(a, alphabet.size()) != 1) {
             throw new IllegalArgumentException("a and m are not coprime");
         }
         
-        final int MUL_INV_IDX = findMulInvIdx(a, alphabet.length);
+        final char[] ALPHABET = alphabet.getAlphabet();
+        
+        final int MUL_INV_IDX = findMulInvIdx(a, ALPHABET.length);
     
         try (BufferedWriter bufOut = new BufferedWriter(plain);
                 BufferedReader bufIn = new BufferedReader(cipher)) {
@@ -126,19 +79,19 @@ public class AffineCipher {
                 c = (char) intChar;
     
                 int i = 0;
-                for (; i < alphabet.length && alphabet[i] != c; ++i) {
-                    if (i == alphabet.length - 1) {
+                for (; i < ALPHABET.length && ALPHABET[i] != c; ++i) {
+                    if (i == ALPHABET.length - 1) {
                         throw new IllegalArgumentException("symbol '"
                                 + c + "' is not present in the alphabet");
                     }
                 }
     
-                int newIdx = (MUL_INV_IDX * (i-b)) % alphabet.length;
+                int newIdx = (MUL_INV_IDX * (i-b)) % ALPHABET.length;
     
                 if (newIdx < 0)
-                    newIdx += alphabet.length;
+                    newIdx += ALPHABET.length;
                 
-                bufOut.write(alphabet[newIdx]);
+                bufOut.write(ALPHABET[newIdx]);
             }
         }
     }

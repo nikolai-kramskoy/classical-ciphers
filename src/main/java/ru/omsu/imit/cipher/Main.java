@@ -8,59 +8,54 @@ public class Main {
         if (args.length == 1 && args[0].equals("--help")) {
             printHelp();
         }
-        else if (args.length == 6 && args[0].equals("caesar")
-                && args[1].equals("encrypt")) {
-            CaesarCipher caesarCipher = new CaesarCipher(
-                    new FileReader(args[2], StandardCharsets.UTF_8));
-            
-            int n = Integer.parseInt(args[5]);
-            
-            try (Writer out = new FileWriter(args[3], StandardCharsets.UTF_8);
+        else if (inputIsValid(args)) {
+            try (Reader alphabetReader = new FileReader(args[2], StandardCharsets.UTF_8);
+                    Writer out = new FileWriter(args[3], StandardCharsets.UTF_8);
                     Reader in = new FileReader(args[4], StandardCharsets.UTF_8)) {
-                caesarCipher.encrypt(out, in, n);
-            }
-        }
-        else if (args.length == 6 && args[0].equals("caesar")
-                && args[1].equals("decrypt")) {
-            CaesarCipher caesarCipher = new CaesarCipher(
-                    new FileReader(args[2], StandardCharsets.UTF_8));
-            
-            int n = Integer.parseInt(args[5]);
+                Alphabet alphabet = new Alphabet(alphabetReader);
     
-            try (Writer out = new FileWriter(args[3], StandardCharsets.UTF_8);
-                    Reader in = new FileReader(args[4], StandardCharsets.UTF_8)) {
-                caesarCipher.decrypt(out, in, n);
-            }
-        }
-        else if (args.length == 7 && args[0].equals("affine")
-                && args[1].equals("encrypt")) {
-            AffineCipher affineCipher = new AffineCipher(
-                    new FileReader(args[2], StandardCharsets.UTF_8));
+                if ("caesar".equals(args[0])) {
+                    int n = Integer.parseInt(args[5]);
     
-            int a = Integer.parseInt(args[5]);
-            int b = Integer.parseInt(args[6]);
+                    if ("encrypt".equals(args[1])) {
+                        CaesarCipher.encrypt(alphabet, out, in, n);
+                    }
+                    else if ("decrypt".equals(args[1])) {
+                        CaesarCipher.decrypt(alphabet, out, in, n);
+                    }
+                }
+                else if ("affine".equals(args[0])) {
+                    int a = Integer.parseInt(args[5]);
+                    int b = Integer.parseInt(args[6]);
     
-            try (Writer out = new FileWriter(args[3], StandardCharsets.UTF_8);
-                    Reader in = new FileReader(args[4], StandardCharsets.UTF_8)) {
-                affineCipher.encrypt(out, in, a, b);
-            }
-        }
-        else if (args.length == 7 && args[0].equals("affine")
-                && args[1].equals("decrypt")) {
-            AffineCipher affineCipher = new AffineCipher(
-                    new FileReader(args[2], StandardCharsets.UTF_8));
-    
-            int a = Integer.parseInt(args[5]);
-            int b = Integer.parseInt(args[6]);
-    
-            try (Writer out = new FileWriter(args[3], StandardCharsets.UTF_8);
-                    Reader in = new FileReader(args[4], StandardCharsets.UTF_8)) {
-                affineCipher.decrypt(out, in, a, b);
+                    if ("encrypt".equals(args[1])) {
+                        AffineCipher.encrypt(alphabet, out, in, a, b);
+                    }
+                    else if ("decrypt".equals(args[1])) {
+                        AffineCipher.decrypt(alphabet, out, in, a, b);
+                    }
+                }
             }
         }
         else {
             System.out.println("Wrong usage, see --help");
         }
+    }
+    
+    private static boolean inputIsValid(String[] args) {
+        boolean isValid = false;
+        
+        // Caesar cipher args check
+        isValid |= args.length == 6
+                && "caesar".equals(args[0])
+                && ("encrypt".equals(args[1]) || "decrypt".equals(args[1]));
+    
+        // Affine cipher args check
+        isValid |= args.length == 7
+                && "affine".equals(args[0])
+                && ("encrypt".equals(args[1]) || "decrypt".equals(args[1]));
+        
+        return isValid;
     }
     
     private static void printHelp() {
