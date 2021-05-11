@@ -75,10 +75,10 @@ public class Main {
         System.out.println();
         System.out.println("keys:");
         System.out.println("    caesar cipher keys:");
-        System.out.println("        n - int shift");
+        System.out.println("        n - any integer");
         System.out.println();
         System.out.println("    affine cipher keys:");
         System.out.println("        a - any coprime to the size of the alphabet integer");
-        System.out.println("        b - any integer number");
+        System.out.println("        b - any integer");
     }
 }

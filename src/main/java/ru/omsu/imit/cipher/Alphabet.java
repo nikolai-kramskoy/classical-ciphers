@@ -20,6 +20,10 @@ public class Alphabet {
     }
     
     public Alphabet(char a, char b) {
+        if (b-a+1 <= 0) {
+            throw new IllegalArgumentException("a must be >= b");
+        }
+        
         alphabet = new char[b-a+1];
         
         for (int i = 0; i < alphabet.length; ++i, ++a) {
@@ -44,15 +48,15 @@ public class Alphabet {
         
         Deque<Character> dequeAlphabet = new LinkedList<>();
         
-        BufferedReader bufIn = new BufferedReader(alphabet);
-        
-        int intChar;
-        while ((intChar = bufIn.read()) != -1) {
-            dequeAlphabet.addLast((char) intChar);
+        try (BufferedReader bufIn = new BufferedReader(alphabet)) {
+            int intChar;
+            while ((intChar = bufIn.read()) != -1) {
+                dequeAlphabet.addLast((char) intChar);
+            }
         }
         
         this.alphabet = new char[dequeAlphabet.size()];
-        
+    
         for (int i = 0; i < this.alphabet.length; ++i) {
             this.alphabet[i] = dequeAlphabet.removeFirst();
         }
