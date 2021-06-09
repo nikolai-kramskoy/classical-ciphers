@@ -22,12 +22,11 @@ public class CaesarCipher {
         final char[] ALPHABET = alphabet.getAlphabet();
 
         try (BufferedWriter bufOut = new BufferedWriter(cipher);
-                BufferedReader bufIn = new BufferedReader(plain)) {
+             BufferedReader bufIn = new BufferedReader(plain)) {
             int  intChar;
-            char c;
             
             while ((intChar = bufIn.read()) != -1) {
-                c = (char) intChar;
+                char c = (char) intChar;
     
                 int i = 0;
                 for (; i < ALPHABET.length && ALPHABET[i] != c; ++i) {
@@ -63,12 +62,11 @@ public class CaesarCipher {
         final char[] ALPHABET = alphabet.getAlphabet();
         
         try (BufferedWriter bufOut = new BufferedWriter(plain);
-                BufferedReader bufIn = new BufferedReader(cipher)) {
+             BufferedReader bufIn = new BufferedReader(cipher)) {
             int  intChar;
-            char c;
             
             while ((intChar = bufIn.read()) != -1) {
-                c = (char) intChar;
+                char c = (char) intChar;
     
                 int i = 0;
                 for (; i < ALPHABET.length && ALPHABET[i] != c; ++i) {

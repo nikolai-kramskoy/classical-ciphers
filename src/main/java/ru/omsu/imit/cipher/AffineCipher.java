@@ -19,7 +19,7 @@ public class AffineCipher {
             throw new IllegalArgumentException("plain == null");
         }
         if (gcd(a, alphabet.size()) != 1) {
-            throw new IllegalArgumentException("a and m are not coprime");
+            throw new IllegalArgumentException("gcd(a, m) != 1");
         }
     
         final char[] ALPHABET = alphabet.getAlphabet();
@@ -27,10 +27,9 @@ public class AffineCipher {
         try (BufferedWriter bufOut = new BufferedWriter(cipher);
                 BufferedReader bufIn = new BufferedReader(plain)) {
             int  intChar;
-            char c;
     
             while ((intChar = bufIn.read()) != -1) {
-                c = (char) intChar;
+                char c = (char) intChar;
         
                 int i = 0;
                 for (; i < ALPHABET.length && ALPHABET[i] != c; ++i) {
@@ -63,7 +62,7 @@ public class AffineCipher {
             throw new IllegalArgumentException("cipher == null");
         }
         if (gcd(a, alphabet.size()) != 1) {
-            throw new IllegalArgumentException("a and m are not coprime");
+            throw new IllegalArgumentException("gcd(a, m) != 1");
         }
         
         final char[] ALPHABET = alphabet.getAlphabet();
@@ -71,12 +70,11 @@ public class AffineCipher {
         final int MUL_INV_IDX = findMulInvIdx(a, ALPHABET.length);
     
         try (BufferedWriter bufOut = new BufferedWriter(plain);
-                BufferedReader bufIn = new BufferedReader(cipher)) {
+             BufferedReader bufIn = new BufferedReader(cipher)) {
             int  intChar;
-            char c;
         
             while ((intChar = bufIn.read()) != -1) {
-                c = (char) intChar;
+                char c = (char) intChar;
     
                 int i = 0;
                 for (; i < ALPHABET.length && ALPHABET[i] != c; ++i) {
